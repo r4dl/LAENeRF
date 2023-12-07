@@ -1905,7 +1905,7 @@ class NeRFGUI:
             dpg.bind_font(default_font)
 
 
-        dpg.create_viewport(title='torch-ngp', width=self.W, height=self.H, resizable=False)
+        dpg.create_viewport(title='LAENeRF', width=self.W, height=self.H, resizable=False)
 
         ### global theme
         with dpg.theme() as theme_no_padding:
