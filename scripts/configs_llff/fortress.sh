@@ -1,0 +1,12 @@
+name="fortress"
+bound=2
+scale=0.16
+bg_radius=0
+density_thresh=10
+iters=10000
+offset='0 0 0.33'
+random_size=0
+dt_gamma=0
+min_near=0.3
+data_dir="./data/llff/${name}"
+workspace="./llff/${name}"
