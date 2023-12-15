@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description"
+          content="LAENeRF enables interactive local appearance edits in NeRF scenes.">
+    <meta name="keywords" content="NeRF, Editing, Stylization, Recoloring">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LAENeRF: Local Appearance Editing for Neural Radiance Fields</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
+      gtag('js', new Date());
+
+      gtag('config', 'G-PYVRSFMDRL');
+    </script>
+    -->
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+
+    <link rel="stylesheet" href="test/dics.css">
+    <script src="test/dics.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+
+<section class="hero">
+    <div class="hero-body">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered">
+
+                <div class="column has-text-centered">
+                    <h1 class="title is-1 publication-title"><span style="font-weight: bolder;">LAENeRF</span><span
+                            style="font-weight: lighter">: Local Appearance Editing for Neural Radiance Fields</span>
+                    </h1>
+                    <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://r4dl.github.io">Lukas Radl</a><sup>1</sup>,</span>
+                        <span class="author-block">
+              <a href="https://online.tugraz.at/tug_online/visitenkarte.show_vcard?pPersonenId=2999CD2743C7E977&pPersonenGruppe=3">Michael Steiner</a><sup>1</sup>,</span>
+                        <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=3yD4NZgAAAAJ&hl=en">Andreas Kurz</a><sup>1</sup>,
+            </span>
+                        <span class="author-block">
+              <a href="https://www.markussteinberger.net/">Markus Steinberger</a><sup>1,2</sup>
+            </span>
+                    </div>
+
+                    <div class="is-size-5 publication-authors">
+                        <span class="author-block"><sup>1</sup>Graz University of Technology,</span>
+                        <span class="author-block"><sup>2</sup>Huawei Technologies</span>
+                    </div>
+
+                    <div class="column has-text-centered">
+                        <div class="publication-links">
+                            <!-- PDF Link.
+                            <span class="link-block">
+                              <a href="https://arxiv.org/pdf/2011.12948"
+                                 class="external-link button is-normal is-rounded is-dark">
+                                <span class="icon">
+                                    <i class="fas fa-file-pdf"></i>
+                                </span>
+                                <span>Paper</span>
+                              </a>
+                            </span>
+                             -->
+                            <span class="link-block">
+                <a href="https://arxiv.org/abs/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+                            <!-- Video Link. -->
+                            <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+                            <!-- Gui Demo Link. -->
+                            <span class="link-block">
+                <a href="https://youtu.be/iXVr6OCD_CA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>GUI Demonstration</span>
+                </a>
+              </span>
+                            <!-- Code Link. -->
+                            <span class="link-block">
+                <a href="https://github.com/r4dl/LAENeRF"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+                            <!-- Dataset Link. -->
+                            <!--<span class="link-block">
+                              <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                                 class="external-link button is-normal is-rounded is-dark">
+                                <span class="icon">
+                                    <i class="far fa-images"></i>
+                                </span>
+                                <span>Data</span>
+                                </a>
+                          </div> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
+        free-viewpoint
+        portraits.
+      </h2>
+    </div>
+  </div>
+</section>
+-->
+<!-- Teaser of Results -->
+<section class="hero is-light is-small">
+    <div class="hero-body">
+        <div class="container">
+            <div id="results-carousel" class="carousel results-carousel">
+                <div class="item item-toby">
+                    <img src="static/demo/horns/wave.gif" class="circle-item">
+                </div>
+                <div class="item item-chair-tp">
+                    <img src="static/demo/lego/kandinsky.gif" class="circle-item">
+                </div>
+                <div class="item item-shiba">
+                    <img src="static/demo/flower/darkred.gif" class="circle-item">
+                </div>
+                <div class="item item-fullbody">
+                    <img src="static/demo/horns/tulipe.gif" class="circle-item">
+                </div>
+                <div class="item item-mask">
+                    <img src="static/demo/kitchen/white.gif" class="circle-item">
+                </div>
+                <div class="item item-mask">
+                    <img src="static/demo/bonsai/tulipe.gif" class="circle-item">
+                </div>
+                <div class="item item-toby">
+                    <img src="static/demo/lego/basquiat.gif" class="circle-item">
+                </div>
+                <div class="item item-coffee">
+                    <img src="static/demo/trex/pink.gif" class="circle-item">
+                </div>
+                <div class="item item-toby">
+                    <img src="static/demo/chair/basquiat.gif" class="circle-item">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+    <div class="container is-max-desktop">
+        <!-- Abstract. -->
+        <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+                <h2 class="title is-3">Abstract</h2>
+                <div class="content has-text-justified">
+                    <p>
+                        Due to the omnipresence of Neural Radiance Fields (NeRFs), the interest towards editable
+                        implicit 3D representations has surged over the last years.
+                        However, editing implicit or hybrid representations as used for NeRFs is difficult due to the
+                        entanglement of appearance and geometry encoded in the model parameters.
+                        Despite these challenges, recent research has shown first promising steps towards photorealistic
+                        and non-photorealistic appearance edits.
+                        The main open issues of related work include limited interactivity, a lack of support for local
+                        edits and large memory requirements, rendering them less useful in practice.
+                    </p>
+                    <p>
+                        We address these limitations with <b>LAENeRF</b>, a unified framework for photorealistic and
+                        non-photorealistic appearance editing of NeRFs.
+                        To tackle local editing, we leverage a voxel grid as starting point for region selection.
+                        We learn a mapping from expected ray terminations to final output color, which can optionally be
+                        supervised by a style loss, resulting in a framework which can perform photorealistic and
+                        non-photorealistic appearance editing of selected regions.
+                        Relying on a single point per ray for our mapping, we limit memory requirements and enable fast
+                        optimization.
+                        To guarantee interactivity, we compose the output color using a set of learned, modifiable base
+                        colors, composed with additive layer mixing.
+                    </p>
+                    <p>
+                        Compared to concurrent work, <b>LAENeRF</b> enables recoloring and stylization while keeping
+                        processing
+                        time low.
+                        Furthermore, we demonstrate that our approach surpasses baseline methods both quantitatively and
+                        qualitatively.
+                </div>
+            </div>
+        </div>
+        <!--/ Abstract. -->
+        <div class="columns is-centered has-text-centered">
+            <div class="column">
+                <h2 class="title is-3">Video</h2>
+                <div class="publication-video">
+                    <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="column">
+                <h2 class="title is-3">GUI Demonstration</h2>
+                <div class="publication-video">
+                    <iframe src="https://www.youtube.com/embed/iXVr6OCD_CA?rel=0&amp;showinfo=0"
+                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <!--/ Paper video. -->
+    </div>
+</section>
+
+
+<section class="section">
+    <div class="container is-max-desktop">
+
+        <!-- More Results. -->
+        <div class="columns is-centered">
+            <div class="column is-full-width">
+
+                <h2 class="title is-3">Results</h2>
+                <div class="content has-text-justified">
+                    <p><b>LAENeRF</b> is a versatile method, allowing for various appearance edits.
+                        In the examples below, you can adjust the scene, the style image and the color.
+                        To sync the gifs (if necessary), re-click the color or style image.</p>
+                </div>
+                <!-- Local Stylization. -->
+                <h3 class="title is-4">Local Stylization</h3>
+            </div>
+        </div>
+        <div class="columns is-centered">
+
+            <button class="button-17-selected" role="button" id="btn_horns"
+                    onclick="changeScene('horns', 'basquiat')"
+                    style="margin-left: 5px; margin-right: 5px">Horns
+            </button>
+            <button class="button-17 stylize" role="button" id="btn_flower" onclick="changeScene('flower', 'circles')"
+                    style="margin-left: 5px; margin-right: 5px">Flower
+            </button>
+            <button class="button-17 stylize" role="button" id="btn_lego" onclick="changeScene('lego', 'basquiat')"
+                    style="margin-left: 5px; margin-right: 5px">Lego
+            </button>
+            <button class="button-17 stylize" role="button" id="btn_chair" onclick="changeScene('chair', 'amuse')"
+                    style="margin-left: 5px; margin-right: 5px">Chair
+            </button>
+            <button class="button-17 stylize" role="button" id="btn_bonsai" onclick="changeScene('bonsai', 'udnie')"
+                    style="margin-left: 5px; margin-right: 5px">Bonsai
+            </button>
+        </div>
+
+        <div class="columns is-centered">
+            <div class="column">
+                <div id="horns">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <img src="resources/style/basquiat.jpg/" class="circle-selected" id="horns_basquiat"
+                                 onclick="changeGIF('basquiat', this)">
+                            <img src="resources/style/tulipe.png/" class="circle" onclick="changeGIF('tulipe', this)">
+                            <img src="resources/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
+                            <img src="resources/style/udnie.png/" class="circle" onclick="changeGIF('udnie', this)">
+                        </div>
+                    </div>
+                </div>
+                <div id="flower" class="is-hidden">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <img src="resources/style/circles.png/" class="circle-selected" id="flower_circles"
+                                 onclick="changeGIF('circles', this)">
+                            <img src="resources/style/picasso.jpeg/" class="circle"
+                                 onclick="changeGIF('picasso', this)">
+                            <img src="resources/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
+                        </div>
+                    </div>
+                </div>
+                <div id="lego" class="is-hidden">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <img src="resources/style/basquiat.jpg/" class="circle-selected" id="lego_basquiat"
+                                 onclick="changeGIF('basquiat', this)">
+                            <img src="resources/style/kandinsky.png/" class="circle"
+                                 onclick="changeGIF('kandinsky', this)">
+                            <img src="resources/style/kandinsky_2.png/" class="circle"
+                                 onclick="changeGIF('kandinsky_2', this)">
+                            <img src="resources/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
+                        </div>
+                    </div>
+                </div>
+                <div id="chair" class="is-hidden">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <img src="resources/style/amuse.jpg/" class="circle-selected" id="chair_amuse"
+                                 onclick="changeGIF('amuse', this)">
+                            <img src="resources/style/basquiat.jpg/" class="circle"
+                                 onclick="changeGIF('basquiat', this)">
+                            <img src="resources/style/drypaint.png/" class="circle"
+                                 onclick="changeGIF('drypaint', this)">
+                            <img src="resources/style/jiujitsu.png/" class="circle"
+                                 onclick="changeGIF('jiujitsu', this)">
+                            <img src="resources/style/tulipe.png/" class="circle"
+                                 onclick="changeGIF('tulipe', this)">
+                        </div>
+                    </div>
+                </div>
+                <div id="bonsai" class="is-hidden">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <img src="resources/style/udnie.png/" class="circle-selected" id="bonsai_udnie"
+                                 onclick="changeGIF('udnie', this)">
+                            <img src="resources/style/tulipe.png/" class="circle"
+                                 onclick="changeGIF('tulipe', this)">
+                            <img src="resources/style/jiujitsu.png/" class="circle"
+                                 onclick="changeGIF('jiujitsu', this)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/demo/horns/horns.gif" alt="NeRF" id="gif_ref">
+                                <img src="static/demo/horns/basquiat.gif" alt="Ours" id="gif_style">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered is-hidden">
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_style/lego/ours.png" alt="Ours">
+                                <img src="static/comparison_style/lego/gt.png" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-full-width">
+                <!-- Local Recoloring. -->
+                <h3 class="title is-4">Local Recoloring</h3>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <button class="button-17-selected" role="button" id="recbtn_flower"
+                    onclick="changeSceneRecolor('flower', 'darkred')"
+                    style="margin-left: 5px; margin-right: 5px">Flower
+            </button>
+            <button class="button-17" role="button" id="recbtn_horns"
+                    onclick="changeSceneRecolor('horns', 'pink')"
+                    style="margin-left: 5px; margin-right: 5px">Horns
+            </button>
+            <button class="button-17" role="button" id="recbtn_trex"
+                    onclick="changeSceneRecolor('trex', 'blue')"
+                    style="margin-left: 5px; margin-right: 5px">Trex
+            </button>
+            <button class="button-17" role="button" id="recbtn_kitchen"
+                    onclick="changeSceneRecolor('kitchen', 'white')"
+                    style="margin-left: 5px; margin-right: 5px">Kitchen
+            </button>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div id="rec_flower">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <div class="circle-rec-selected" id="flower_darkred" style="background-color: #5e0707"
+                                 onclick="changeGIFrecolor('darkred', this)"></div>
+                            <div class="circle-rec" style="background-color: #03f30f"
+                                 onclick="changeGIFrecolor('green', this)"></div>
+                            <div class="circle-rec" style="background-color: #b08d2c"
+                                 onclick="changeGIFrecolor('gold', this)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="rec_horns" class="is-hidden">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <div class="circle-rec-selected" id="horns_pink" style="background-color: #b73aac"
+                                 onclick="changeGIFrecolor('pink', this)"></div>
+                            <div class="circle-rec" style="background-color: #626462"
+                                 onclick="changeGIFrecolor('gray', this)"></div>
+                            <div class="circle-rec" style="background-color: #ad3737"
+                                 onclick="changeGIFrecolor('red', this)"></div>
+                            <div class="circle-rec" style="background-color: #3747ad"
+                                 onclick="changeGIFrecolor('blue', this)"></div>
+                            <div class="circle-rec" style="background-color: #3fad37"
+                                 onclick="changeGIFrecolor('green', this)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="rec_trex" class="is-hidden">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <div class="circle-rec-selected" id="trex_blue" style="background-color: #3747ad"
+                                 onclick="changeGIFrecolor('blue', this)"></div>
+                            <div class="circle-rec" style="background-color: #b73aac"
+                                 onclick="changeGIFrecolor('pink', this)"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="rec_kitchen" class="is-hidden">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <div class="circle-rec-selected" id="kitchen_white" style="background-color: #d8dae5"
+                                 onclick="changeGIFrecolor('white', this)"></div>
+                            <div class="circle-rec" style="background-color: #c77a1e"
+                                 onclick="changeGIFrecolor('orange', this)"></div>
+                            <div class="circle-rec" style="background-color: #1e81c7"
+                                 onclick="changeGIFrecolor('blue', this)"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/demo/flower/flower.gif" alt="NeRF" id="recgif_ref">
+                                <img src="static/demo/flower/darkred.gif" alt="Ours" id="recgif_style">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column is-full-width">
+                <!-- Local Recoloring. -->
+                <h3 class="title is-4">Recolorable Stylization</h3>
+                <div class="content has-text-justified">
+                    <p><b>LAENeRF</b> permits recoloring of stylized content, relying on a palette-based decomposition.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div id="rs_horns">
+                    <div class="content">
+                        <div class="columns is-centered">
+                            <div class="circle-rs-selected" id="hornswave_red" style="background-color: #a82e2e"
+                                 onclick="changeGIFrecolorstyle('red', this)"></div>
+                            <div class="circle-rs" style="background-color: #2e3ea8"
+                                 onclick="changeGIFrecolorstyle('blue', this)"></div>
+                            <div class="circle-rs" style="background-color: #ffffff"
+                                 onclick="changeGIFrecolorstyle('white', this)"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/demo/horns/wave.gif" alt="Stylized" id="rsgif_ref">
+                                <img src="static/demo/hornswave/red.gif" alt="Recolored" id="rsgif_style">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container is-max-desktop">
+
+        <!-- Image Comparisons / Recoloring. -->
+        <div class="columns is-centered">
+            <div class="column is-full-width">
+                <h2 class="title is-3">Image Comparisons</h2>
+
+                <!-- Local Recoloring. -->
+                <h3 class="title is-4">Local Recoloring</h3>
+                <div class="content has-text-justified">
+                    <p>
+                        Our method outperforms previous work for local recoloring. We compare our method to PaletteNeRF
+                        [<a href="http://palettenerf.github.io">Kuang22</a>] with and without semantic guidance.
+                        <b>LAENeRF</b> introduces fewer background artefacts whilst recoloring the selected region
+                        faithfully.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <button class="button-17" role="button" id="btn_pnf" onclick="changeStyle(this)"
+                    style="margin-left: 5px; margin-right: 5px">PaletteNeRF
+            </button>
+            <button class="button-17-selected" role="button" id="btn_pnf_sem" onclick="changeStyle(this)"
+                    style="margin-left: 5px; margin-right: 5px">PaletteNeRF Semantic
+            </button>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_pnf/horns/ours.png" alt="Ours">
+                                <img src="static/comparison_pnf/horns/pnf.png" alt="PaletteNeRF [Kuang22]"
+                                     id="recolor_horns">
+                                <img src="static/comparison_pnf/horns/gt.png" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_pnf/trex/ours.png" alt="Ours">
+                                <img src="static/comparison_pnf/trex/pnf.png" alt="PaletteNeRF [Kuang22]"
+                                     id="recolor_trex">
+                                <img src="static/comparison_pnf/trex/gt.png" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_pnf/room/ours.png" alt="Ours">
+                                <img src="static/comparison_pnf/room/pnf.png" alt="PaletteNeRF [Kuang22]"
+                                     id="recolor_room">
+                                <img src="static/comparison_pnf/room/gt.JPG" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_pnf/bonsai/ours.png" alt="Ours">
+                                <img src="static/comparison_pnf/bonsai/pnf.png" alt="PaletteNeRF [Kuang22]"
+                                     id="recolor_bonsai">
+                                <img src="static/comparison_pnf/bonsai/gt.JPG" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Image Comparisons/ Recoloring. -->
+        <div class="columns is-centered">
+            <div class="column is-full-width">
+                <!-- Local Stylization. -->
+                <h3 class="title is-4">Local Stylization</h3>
+                <div class="content has-text-justified">
+                    <p>
+                        By providing a style loss to LAENeRF, our method can stylize arbitrary selected regions.
+                        Our method introduces fewer background artefacts compared to Ref-NPR [<a
+                            href="http://ref-npr.github.io">Zhang22</a>] whilst stylizing the selected region
+                        faithfully.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_style/lego/ours.png" alt="Ours">
+                                <img src="static/comparison_style/lego/npr.png" alt="Ref-NPR [Zhang22]" id="style_lego">
+                                <img src="static/comparison_style/lego/gt.png" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_style/drums/ours.png" alt="Ours">
+                                <img src="static/comparison_style/drums/npr.png" alt="Ref-NPR [Zhang22]"
+                                     id="style_lego">
+                                <img src="static/comparison_style/drums/gt.png" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_style/horns/ours.png" alt="Ours">
+                                <img src="static/comparison_style/horns/npr.png" alt="Ref-NPR [Zhang22]"
+                                     id="style_lego">
+                                <img src="static/comparison_style/horns/gt.png" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="content">
+                    <div class="columns is-centered">
+                        <div class="column is-full-width">
+                            <div class="b-dics">
+                                <img src="static/comparison_style/flower/ours.png" alt="Ours">
+                                <img src="static/comparison_style/flower/npr.png" alt="Ref-NPR [Zhang22]"
+                                     id="style_lego">
+                                <img src="static/comparison_style/flower/gt.png" alt="Ground Truth">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--/ Image Comparisons / Stylization. -->
+</section>
+
+
+<section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+        <h2 class="title">BibTeX</h2>
+        <div class="content has-text-justified">
+            <p>
+                If you find our work useful, consider using a citation.
+            </p>
+        </div>
+        <pre><code>@article{radl2023laenerf,
+  author    = {Radl, Lukas and Steiner, Michael and Kurz, Andreas and Steinberger, Markus},
+  title     = {{LAENeRF: Local Appearance Editing for Neural Radiance Fields}},
+  journal   = {arXiv preprint arXiv:},
+  year      = {2023},
+}</code></pre>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container is-max-desktop">
+
+        <!-- Image Comparisons. -->
+        <div class="columns is-centered">
+            <div class="column is-full-width">
+                <!-- Concurrent Work. -->
+                <div class="columns is-centered">
+                    <div class="column is-full-width">
+                        <h2 class="title is-3">Related Work</h2>
+
+                        <div class="content has-text-justified">
+                            <p>[<a href="https://palettenerf.github.io/">Kuang22</a>] Kuang, Z., Luan, F., Bi, S., Shu,
+                                Z., Wetzstein, G., Sunkavalli, K. 2022. PaletteNeRF: Palette-based Appearance Editing of
+                                Neural Radiance Fields.</p>
+                            <p>[<a href="https://ref-npr.github.io/">Zhang22</a>] Zhang, Y., He, Z., Xing, J., Yao, X.,
+                                Jia, J. 2022. Ref-NPR: Reference-Based Non-Photorealistic Radiance Fields for
+                                Controllable Scene Stylization.</p>
+                        </div>
+                    </div>
+                </div>
+                <!--/ Concurrent Work. -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-8">
+                <div class="content">
+                    <p>
+                        We thank the authors of <a href="https://nerfies.github.io/">Nerfies</a> who kindly open sourced
+                        the template of this website, which is located <a
+                            href="https://github.com/nerfies/nerfies.github.io">here</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
