@@ -1,7 +1,7 @@
 # LAENeRF: Local Appearance Editing for Neural Radiance Fields
 ### [Lukas Radl](https://r4dl.github.io/), [Michael Steiner](https://online.tugraz.at/tug_online/visitenkarte.show_vcard?pPersonenId=2999CD2743C7E977&pPersonenGruppe=3), [Andreas Kurz](https://scholar.google.com/citations?user=3yD4NZgAAAAJ&hl=de&oi=ao), [Markus Steinberger](https://www.markussteinberger.net/)
 ##### Institute of Computer Graphics and Vision, Graz University of Technology
-#### [Project Page](https://r4dl.github.io/nerfinternals/) | [Preprint](https://arxiv.org/pdf/2306.00696.pdf)
+#### [Project Page](https://r4dl.github.io/LAENeRF/) | [Preprint](https://arxiv.org/pdf/2306.00696.pdf) | [Video](https://youtu.be/HwQ1x0Fb2Qc)
 
 <p align="middle">
     <img src="assets/teaser.png" width=1200px>
