@@ -165,6 +165,7 @@ body {
     border-radius: 50%;
     opacity: 50%;
     border: 2px solid dimgray;
+    display: inline-block;
     margin: 10px;
     background: green;
     box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
@@ -175,6 +176,7 @@ body {
     height: 125px;
     border-radius: 50%;
     border: 2px solid dimgray;
+    display: inline-block;
     margin: 10px;
     background: green;
     box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 6px 10px 5px;
@@ -185,6 +187,7 @@ body {
     height: 50px;
     border-radius: 50%;
     border: 1px solid dimgray;
+    display: inline-block;
     margin: 10px;
     background: green;
     box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 0px 0px 0px;
@@ -194,6 +197,7 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    display: inline-block;
     border: 1px solid dimgray;
     margin: 10px;
     background: green;
@@ -204,6 +208,7 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    display: inline-block;
     border: 1px solid black;
     margin: 10px;
     background: green;
@@ -214,6 +219,7 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    display: inline-block;
     border: 1px solid black;
     margin: 10px;
     background: green;

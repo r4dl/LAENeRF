@@ -35,6 +35,31 @@
           href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
     <link rel="stylesheet" href="./static/css/index.css">
 
+    <!--    preloads-->
+    <link rel="preload" as="image" href="static/style/basquiat.jpg">
+    <link rel="preload" as="image" href="static/style/tulipe.png">
+    <link rel="preload" as="image" href="static/style/wave.png">
+    <link rel="preload" as="image" href="static/style/udnie.png">
+
+    <link rel="preload" as="image" href="static/demo/horns/horns.gif">
+    <link rel="preload" as="image" href="static/demo/horns/basquiat.gif">
+    <link rel="preload" as="image" href="static/demo/flower/flower.gif">
+    <link rel="preload" as="image" href="static/demo/flower/darkred.gif">
+    <link rel="preload" as="image" href="static/demo/horns/wave.gif">
+    <link rel="preload" as="image" href="static/demo/hornswave/red.gif">
+    <!--    prefetch all other first examples-->
+    <link rel="prefetch" as="image" href="static/demo/flower/flower.gif">
+    <link rel="prefetch" as="image" href="static/demo/flower/circles.gif">
+    <link rel="prefetch" as="image" href="static/demo/lego/lego.gif">
+    <link rel="prefetch" as="image" href="static/demo/lego/basquiat.gif">
+    <link rel="prefetch" as="image" href="static/demo/chair/chair.gif">
+    <link rel="prefetch" as="image" href="static/demo/chair/amuse.gif">
+    <link rel="prefetch" as="image" href="static/demo/bonsai/bonsai.gif">
+    <link rel="prefetch" as="image" href="static/demo/bonsai/udnie.gif">
+    <link rel="prefetch" as="image" href="static/demo/horns/pink.gif">
+    <link rel="prefetch" as="image" href="static/demo/trex/blue.gif">
+    <link rel="prefetch" as="image" href="static/demo/kitchen/white.gif">
+
     <link rel="stylesheet" href="test/dics.css">
     <script src="test/dics.js"></script>
 
@@ -58,35 +83,23 @@
                     </h1>
                     <div class="is-size-5 publication-authors">
             <span class="author-block">
-              <a href="https://r4dl.github.io">Lukas Radl</a><sup>1</sup>,</span>
+              <a href="https://r4dl.github.io">Lukas Radl</a>,</span>
                         <span class="author-block">
-              <a href="https://online.tugraz.at/tug_online/visitenkarte.show_vcard?pPersonenId=2999CD2743C7E977&pPersonenGruppe=3">Michael Steiner</a><sup>1</sup>,</span>
+              <a href="https://online.tugraz.at/tug_online/visitenkarte.show_vcard?pPersonenId=2999CD2743C7E977&pPersonenGruppe=3">Michael Steiner</a>,</span>
                         <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=3yD4NZgAAAAJ&hl=en">Andreas Kurz</a><sup>1</sup>,
+              <a href="https://scholar.google.com/citations?user=3yD4NZgAAAAJ&hl=en">Andreas Kurz</a>
             </span>
                         <span class="author-block">
-              <a href="https://www.markussteinberger.net/">Markus Steinberger</a><sup>1,2</sup>
+              <a href="https://www.markussteinberger.net/">Markus Steinberger</a>
             </span>
                     </div>
 
                     <div class="is-size-5 publication-authors">
-                        <span class="author-block"><sup>1</sup>Graz University of Technology,</span>
-                        <span class="author-block"><sup>2</sup>Huawei Technologies</span>
+                        <span class="author-block">Graz University of Technology</span>
                     </div>
 
                     <div class="column has-text-centered">
                         <div class="publication-links">
-                            <!-- PDF Link.
-                            <span class="link-block">
-                              <a href="https://arxiv.org/pdf/2011.12948"
-                                 class="external-link button is-normal is-rounded is-dark">
-                                <span class="icon">
-                                    <i class="fas fa-file-pdf"></i>
-                                </span>
-                                <span>Paper</span>
-                              </a>
-                            </span>
-                             -->
                             <span class="link-block">
                 <a href="https://arxiv.org/abs/2011.12948"
                    class="external-link button is-normal is-rounded is-dark">
@@ -126,17 +139,6 @@
                   <span>Code</span>
                   </a>
               </span>
-                            <!-- Dataset Link. -->
-                            <!--<span class="link-block">
-                              <a href="https://github.com/google/nerfies/releases/tag/0.1"
-                                 class="external-link button is-normal is-rounded is-dark">
-                                <span class="icon">
-                                    <i class="far fa-images"></i>
-                                </span>
-                                <span>Data</span>
-                                </a>
-                          </div> -->
-
                         </div>
                     </div>
                 </div>
@@ -298,71 +300,50 @@
         </div>
 
         <div class="columns is-centered">
-            <div class="column">
                 <div id="horns">
-                    <div class="content">
-                        <div class="columns is-centered">
-                            <img src="resources/style/basquiat.jpg/" class="circle-selected" id="horns_basquiat"
+                            <img src="static/style/basquiat.jpg/" class="circle-selected" id="horns_basquiat"
                                  onclick="changeGIF('basquiat', this)">
-                            <img src="resources/style/tulipe.png/" class="circle" onclick="changeGIF('tulipe', this)">
-                            <img src="resources/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
-                            <img src="resources/style/udnie.png/" class="circle" onclick="changeGIF('udnie', this)">
-                        </div>
-                    </div>
+                            <img src="static/style/tulipe.png/" class="circle" onclick="changeGIF('tulipe', this)">
+                            <img src="static/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
+                            <img src="static/style/udnie.png/" class="circle" onclick="changeGIF('udnie', this)">
+
                 </div>
                 <div id="flower" class="is-hidden">
-                    <div class="content">
-                        <div class="columns is-centered">
-                            <img src="resources/style/circles.png/" class="circle-selected" id="flower_circles"
+                            <img src="static/style/circles.png/" class="circle-selected" id="flower_circles"
                                  onclick="changeGIF('circles', this)">
-                            <img src="resources/style/picasso.jpeg/" class="circle"
+                            <img src="static/style/picasso.jpeg/" class="circle"
                                  onclick="changeGIF('picasso', this)">
-                            <img src="resources/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
-                        </div>
-                    </div>
+                            <img src="static/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
                 </div>
                 <div id="lego" class="is-hidden">
-                    <div class="content">
-                        <div class="columns is-centered">
-                            <img src="resources/style/basquiat.jpg/" class="circle-selected" id="lego_basquiat"
+                            <img src="static/style/basquiat.jpg/" class="circle-selected" id="lego_basquiat"
                                  onclick="changeGIF('basquiat', this)">
-                            <img src="resources/style/kandinsky.png/" class="circle"
+                            <img src="static/style/kandinsky.png/" class="circle"
                                  onclick="changeGIF('kandinsky', this)">
-                            <img src="resources/style/kandinsky_2.png/" class="circle"
+                            <img src="static/style/kandinsky_2.png/" class="circle"
                                  onclick="changeGIF('kandinsky_2', this)">
-                            <img src="resources/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
-                        </div>
-                    </div>
+                            <img src="static/style/wave.png/" class="circle" onclick="changeGIF('wave', this)">
                 </div>
                 <div id="chair" class="is-hidden">
-                    <div class="content">
-                        <div class="columns is-centered">
-                            <img src="resources/style/amuse.jpg/" class="circle-selected" id="chair_amuse"
+                            <img src="static/style/amuse.jpg/" class="circle-selected" id="chair_amuse"
                                  onclick="changeGIF('amuse', this)">
-                            <img src="resources/style/basquiat.jpg/" class="circle"
+                            <img src="static/style/basquiat.jpg/" class="circle"
                                  onclick="changeGIF('basquiat', this)">
-                            <img src="resources/style/drypaint.png/" class="circle"
+                            <img src="static/style/drypaint.png/" class="circle"
                                  onclick="changeGIF('drypaint', this)">
-                            <img src="resources/style/jiujitsu.png/" class="circle"
+                            <img src="static/style/jiujitsu.png/" class="circle"
                                  onclick="changeGIF('jiujitsu', this)">
-                            <img src="resources/style/tulipe.png/" class="circle"
+                            <img src="static/style/tulipe.png/" class="circle"
                                  onclick="changeGIF('tulipe', this)">
-                        </div>
-                    </div>
                 </div>
                 <div id="bonsai" class="is-hidden">
-                    <div class="content">
-                        <div class="columns is-centered">
-                            <img src="resources/style/udnie.png/" class="circle-selected" id="bonsai_udnie"
+                            <img src="static/style/udnie.png/" class="circle-selected" id="bonsai_udnie"
                                  onclick="changeGIF('udnie', this)">
-                            <img src="resources/style/tulipe.png/" class="circle"
+                            <img src="static/style/tulipe.png/" class="circle"
                                  onclick="changeGIF('tulipe', this)">
-                            <img src="resources/style/jiujitsu.png/" class="circle"
+                            <img src="static/style/jiujitsu.png/" class="circle"
                                  onclick="changeGIF('jiujitsu', this)">
-                        </div>
-                    </div>
                 </div>
-            </div>
         </div>
         <div class="columns is-centered">
             <div class="column">
@@ -378,20 +359,6 @@
                 </div>
             </div>
         </div>
-        <div class="columns is-centered is-hidden">
-            <div class="column">
-                <div class="content">
-                    <div class="columns is-centered">
-                        <div class="column is-full-width">
-                            <div class="b-dics">
-                                <img src="static/comparison_style/lego/ours.png" alt="Ours">
-                                <img src="static/comparison_style/lego/gt.png" alt="Ground Truth">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="columns is-centered">
             <div class="column is-full-width">
                 <!-- Local Recoloring. -->
@@ -399,6 +366,7 @@
             </div>
         </div>
         <div class="columns is-centered">
+            <div>
             <button class="button-17-selected" role="button" id="recbtn_flower"
                     onclick="changeSceneRecolor('flower', 'darkred')"
                     style="margin-left: 5px; margin-right: 5px">Flower
@@ -414,18 +382,18 @@
             <button class="button-17" role="button" id="recbtn_kitchen"
                     onclick="changeSceneRecolor('kitchen', 'white')"
                     style="margin-left: 5px; margin-right: 5px">Kitchen
-            </button>
+            </button></div>
         </div>
         <div class="columns is-centered">
             <div class="column">
                 <div id="rec_flower">
                     <div class="content">
                         <div class="columns is-centered">
-                            <div class="circle-rec-selected" id="flower_darkred" style="background-color: #5e0707"
+                            <div class="circle-rec-selected" id="flower_darkred" style="background-color: #5e0707;"
                                  onclick="changeGIFrecolor('darkred', this)"></div>
-                            <div class="circle-rec" style="background-color: #03f30f"
+                            <div class="circle-rec" style="background-color: #03f30f;"
                                  onclick="changeGIFrecolor('green', this)"></div>
-                            <div class="circle-rec" style="background-color: #b08d2c"
+                            <div class="circle-rec" style="background-color: #b08d2c;"
                                  onclick="changeGIFrecolor('gold', this)"></div>
                         </div>
                     </div>
