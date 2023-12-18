@@ -156,6 +156,7 @@ class StyleNetwork(nn.Module):
             outs.append(G)
         return th.stack(outs)
 
+    # experimental feature, not used
     def guided_gram_mse_loss(self, style_feature, target_img, guide_img):
         # first, random crop the same region from both target image and guide image (to ensure consistency)
         # using the torchvision functional API
@@ -177,7 +178,9 @@ class StyleNetwork(nn.Module):
 
         return F.mse_loss(G_style, G_img)
 
+    # forward pass used for style transfer
     def forward(self, input_img, guide=None):
+        # create a feature from the image
         x = self.image_to_feature(self.transform_image(input_img, crop=False))
         G = self.gram_matrix(x)
         if self.preserve_color:

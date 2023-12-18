@@ -4,7 +4,7 @@ import numpy as np
 import dearpygui.dearpygui as dpg
 import torchvision
 from scipy.spatial.transform import Rotation as R
-from editing.style_encoder import StyleEncoder
+from editing.style_encoder import LAENeRF
 from editing.edit_dataset import EditDataset
 from editing.single_view_edit_dataset import SingleViewEditDataset
 from editing.editgrid import EditGrid
@@ -88,7 +88,7 @@ class NeRFGUI:
         self.negative_grid = EditGrid()
         self.growing_grid = EditGrid()
         self.current_grid = self.grid
-        self.style_encoder: StyleEncoder = None
+        self.style_encoder: LAENeRF = None
         self.semantic_encoder: SemanticEncoder = None
         self.edit_dataset = None
         self.edit_dataset_ = None
@@ -156,7 +156,6 @@ class NeRFGUI:
         else:
             if self.opt.run_all:
                 self.opt.smooth_trans_weight = 0.
-            print(self.opt.smooth_trans_weight)
         self.eval = False
         self.eval_type = 'None'
 
@@ -248,7 +247,7 @@ class NeRFGUI:
 
         # init the style predictor
         if self.style_encoder is None:
-            self.style_encoder = StyleEncoder(
+            self.style_encoder = LAENeRF(
                 params=self.opt,
                 color_palette=None,
                 dir_encoding="sphere_harmonics" if not self.train_styleenc_npr else None,
@@ -327,12 +326,12 @@ class NeRFGUI:
 
     def train_style_step(self,
                          train_steps=16):
-        outputs = self.trainer.train_styleenc_step(self.train_loader,
-                                                   edit_dataset=self.edit_dataset,
-                                                   style_encoder=self.style_encoder,
-                                                   params=self.opt,
-                                                   step=train_steps,
-                                                   global_step=self.distill_step)
+        outputs = self.trainer.train_LAENeRF_step(self.train_loader,
+                                                  edit_dataset=self.edit_dataset,
+                                                  style_encoder=self.style_encoder,
+                                                  params=self.opt,
+                                                  step=train_steps,
+                                                  global_step=self.distill_step)
         self.loss_distill.append(outputs["loss"])
         self.distill_step += train_steps
 
@@ -357,7 +356,7 @@ class NeRFGUI:
 
     def distill_dataset(self,
                         train_dataset,
-                        style_encoder: StyleEncoder,
+                        style_encoder: LAENeRF,
                         edit_dataset,
                         save_train_dataset=False,
                         blend_thresh=0.5):
@@ -1099,10 +1098,11 @@ class NeRFGUI:
 
             
             # edit info
-            with dpg.collapsing_header(label="Editing", default_open=False):
+            with dpg.collapsing_header(label="Region Selecion", default_open=True):
                 dpg.add_separator()
                 with dpg.group(horizontal=True):
-                    dpg.add_text("Current Grid: ")
+                    dpg.add_text("Current Grid: (1 Edit, 2 Binary, 3 Grow)")
+                with dpg.group(horizontal=True):
                     def callback_select_grid(sender, app_data):
                         if int(app_data) == 0:
                             self.current_grid = self.grid
@@ -1250,20 +1250,6 @@ class NeRFGUI:
                         path = os.path.join(self.opt.ablation_dir, self.opt.ablation_folder,
                                             f'{self.grow_grid_str}.pth')
                         self.growing_grid.save_grid_as_torch(path)
-
-                    def callback_growgrid(sender, app_data):
-                        self.growing_grid.grid_from_growing_queue(
-                            density_thresh=self.trainer.model.density_thresh,
-                            grid=self.grid,
-                            density_grid=self.trainer.model.density_grid
-                        )
-
-                    dpg.add_button(label="Extract Growing Grid", tag="_button_growgrid", callback=callback_growgrid)
-                    dpg.bind_item_theme("_button_growgrid", theme_button)
-
-                    dpg.add_button(label="Save", tag="_button_savegrowgrid", callback=callback_savegrowgrid)
-                    dpg.bind_item_theme("_button_savegrowgrid", theme_button)
-
                     def callback_load_grow_grid(sender, app_data):
                         self.growing_grid.load_grid_as_torch(app_data['file_path_name'])
 
@@ -1277,8 +1263,12 @@ class NeRFGUI:
                     def callback_load_grid(sender, app_data):
                         dpg.show_item("file_dialog_loadgrowgrid")
 
+                    dpg.add_button(label="Save", tag="_button_savegrowgrid", callback=callback_savegrowgrid)
+                    dpg.bind_item_theme("_button_savegrowgrid", theme_button)
+
                     dpg.add_button(label="Load", tag="_button_loadgrowgrid", callback=callback_load_grid)
                     dpg.bind_item_theme("_button_loadgrowgrid", theme_button)
+
 
                     def callback_show_grow_grid(sender, app_data):
                         if self.show_grid == 'grow':
@@ -1293,21 +1283,28 @@ class NeRFGUI:
                         self.need_update = True
 
                     dpg.add_button(label="Show Grow Grid", tag="_button_show_grow_grid",
-                                   callback=callback_show_grow_grid)
+                                   callback=callback_show_grow_grid, show=False)
                     dpg.bind_item_theme("_button_show_grow_grid", theme_button)
 
                     def callback_reset_ggrid(sender, app_data):
                         self.growing_grid.reset()
                         self.need_update = True
 
+                with dpg.group(horizontal=True):
+                    def callback_growgrid(sender, app_data):
+                        self.growing_grid.grid_from_growing_queue(
+                            density_thresh=self.trainer.model.density_thresh,
+                            grid=self.grid,
+                            density_grid=self.trainer.model.density_grid
+                        )
 
-                    dpg.add_button(label="Reset Grow Grid", tag="_button_reset_ggrid", callback=callback_reset_ggrid)
-                    dpg.bind_item_theme("_button_reset_ggrid", theme_button)
+                    dpg.add_button(label="Extract Growing Grid", tag="_button_growgrid", callback=callback_growgrid)
+                    dpg.bind_item_theme("_button_growgrid", theme_button)
 
-            with dpg.collapsing_header(label="Style Transfer", default_open=True):
+            with dpg.collapsing_header(label="Appearance Editing", default_open=True):
                 dpg.add_separator()
                 with dpg.group(horizontal=True):
-                    dpg.add_text("Train StyleEnc: ")
+                    dpg.add_text("Train LAENeRF: ")
 
                     def callback_load_style_image(sender, app_data):
                         # were dealing with a png, idk why this is stupid...
@@ -1385,7 +1382,7 @@ class NeRFGUI:
                         self.original_palet = torch.zeros((self.opt.num_palette_bases, 3), dtype=torch.float32)
                         self.trainer.style_optimizer = None
 
-                    dpg.add_button(label="Reset Dataset", tag="_button_reseteditdset", callback=callback_reset_editdataset)
+                    dpg.add_button(label="Reset Dataset", tag="_button_reseteditdset", callback=callback_reset_editdataset, show=False)
                     dpg.bind_item_theme("_button_reseteditdset", theme_button)
 
                     def callback_load_styleenc(sender, app_data):
@@ -1538,21 +1535,7 @@ class NeRFGUI:
                     dpg.add_color_edit(default_value=list((self.palet[self.highlight_palette_id]* 255).byte().numpy()),
                                        label="Palette Color", width=200, tag="_palette_color_editor", no_alpha=True,
                                        callback=callback_change_palette_)
-
-                with dpg.group(horizontal=True):
-                    dpg.add_slider_float(label="R", width=palet_width, min_value=palet_min_max[0], max_value=palet_min_max[1],
-                                         format="%.2f", default_value=self.palet[0,0], tag='p0',
-                                         callback=callback_set_palet, user_data=[0,0])
-
-                    dpg.add_slider_float(label="G", width=palet_width, min_value=palet_min_max[0], max_value=palet_min_max[1],
-                                         format="%.2f", default_value=self.palet[0,1], tag='p1',
-                                         callback=callback_set_palet, user_data=[0,1])
-
-                    dpg.add_slider_float(label="B", width=palet_width, min_value=palet_min_max[0], max_value=palet_min_max[1],
-                                         format="%.2f", default_value=self.palet[0,2], tag='p2',
-                                         callback=callback_set_palet, user_data=[0,2])
-
-            with dpg.collapsing_header(label="Reference-Based Stylization", default_open=False):
+            with dpg.collapsing_header(label="Reference-Based Stylization", default_open=False, show=False):
 
                 with dpg.group(horizontal=True):
                     dpg.add_text("Train StyleEnc: ")
@@ -1649,7 +1632,8 @@ class NeRFGUI:
                         self.eval = True
                         self.eval_type = 'mask'
 
-                    dpg.add_button(label="Eval with masks", tag="_button_eval_mask", callback=callback_eval_mask)
+                    dpg.add_button(label="Eval with masks", tag="_button_eval_mask", callback=callback_eval_mask,
+                                   show=False)
                     dpg.bind_item_theme("_button_eval_mask", theme_button)
 
                     def callback_screenshot(sender, app_data):
@@ -1965,10 +1949,12 @@ class NeRFGUI:
                     t = self.starter.elapsed_time(self.ender)
                     self.timings.append(t / 1000.)
 
+                    # save checkpoint
                     self.trainer.save_checkpoint(path=os.path.join(self.opt.ablation_dir, self.opt.ablation_folder),
                                                  full=True)
-                    #self.eval_masked(loader1=self.val_loader, prefix='masked', loader2=self.test_loader,
-                    #                 loader3=self.train_loader)
+
+                    # after LAENeRF is trained
+                    # eval val, test and video (if exists)
                     self.eval_nerf(loader=self.val_loader, prefix='val')
                     self.eval_nerf(loader=self.test_loader, prefix='test')
                     self.eval_nerf(loader=self.video_loader, prefix='video')
@@ -1980,6 +1966,7 @@ class NeRFGUI:
                     torch.save(self.palet,
                                os.path.join(self.opt.ablation_dir, self.opt.ablation_folder, "palet_mod.pth"))
 
+                    # save timi9ngs
                     if len(self.timings) > 3:
                         timings_ = {
                             "edit_dataset": f'{self.timings[0]:.2f} s',
@@ -1997,6 +1984,7 @@ class NeRFGUI:
                         exit(0)
             if self.distill and not self.training:
                 dpg.configure_item("_button_train", label="stop")
+                # need to do this if we load a style encoder
                 if self.edit_dataset is None:
                     self.edit_dataset = EditDataset(self.opt, self.train_loader, self.grid, self.growing_grid, self.trainer, depth_diff=self.opt.depth_diff).dataloader()
                 self.distill_dataset(self.train_loader,
@@ -2049,6 +2037,7 @@ class NeRFGUI:
 
                     dpg.show_item("_text_distill")
                     dpg.show_item("_button_distill")
+                    # uncomment the following to validate the style encoder
                     #self.eval_style_predictor(loader=self.val_loader, folder_name='val_styleenc')
                     if self.opt.run_all:
                         #self.starter.record()

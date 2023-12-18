@@ -17,7 +17,7 @@ import plot_utils.io as utility
 from configargparse import Namespace
 
 
-class StyleEncoder(nn.Module):
+class LAENeRF(nn.Module):
     def __init__(self,
                  params: Namespace,
                  encoding="hashgrid",

@@ -37,7 +37,7 @@ from packaging import version as pver
 import lpips
 from torchmetrics.functional import structural_similarity_index_measure
 
-from editing.style_encoder import StyleEncoder
+from editing.style_encoder import LAENeRF
 from editing.semantic_encoder import SemanticEncoder
 
 def custom_meshgrid(*args):
@@ -826,6 +826,7 @@ class Trainer(object):
 
         self.log(f"==> Finished Test.")
 
+    # experimental feature, never used
     def train_gui_npr(self, train_loader, distill=False, step=16, dataloader=None):
 
         self.model.train()
@@ -949,13 +950,13 @@ class Trainer(object):
         return outputs
 
 
-    def train_styleenc_step(self,
-                            train_loader,
-                            edit_dataset,
-                            style_encoder: StyleEncoder,
-                            params: Namespace,
-                            step: int = 16,
-                            global_step: int = 0):
+    def train_LAENeRF_step(self,
+                           train_loader,
+                           edit_dataset,
+                           style_encoder: LAENeRF,
+                           params: Namespace,
+                           step: int = 16,
+                           global_step: int = 0):
 
         style_encoder.train()
         loader = iter(train_loader)
@@ -965,7 +966,6 @@ class Trainer(object):
         total_loss = torch.tensor([0], dtype=torch.float32, device=self.device)
         loss_fct = nn.MSELoss()
 
-        self.model.eval()
         # na\"ive Adam
         if self.style_optimizer is None:
             # naive adam
@@ -974,8 +974,6 @@ class Trainer(object):
         # preserve_colors
         if params.preserve_color:
             style_encoder.color_transfer_style_img(next(edit_loader)['target'].T)
-        #if global_step > (params.train_steps_style - params.warmup_iterations):
-        #    self.style_optimizer = optim.Adam(style_encoder.get_params_but_dont_learn_palette(0.001))
 
         for _ in range(step):
             # random pose for each iteration
@@ -989,44 +987,52 @@ class Trainer(object):
                 x=d["x_term"],
                 d=d['d'].squeeze()
             )
-            #pred_colors = d["w8s"][..., None].half()
 
             loss = loss_fct(input=pred_colors, target=d["target"].half())
+            # add weight, offset and palet loss
             loss += style_encoder.weights_loss(pred_weight, params).half()
             loss += style_encoder.offset_loss(pred_offset, params).half()
             loss += style_encoder.palet_loss(params).half()
 
             if (params.style_weight > 0 or params.tv_weight > 0) and global_step > self.opt.warmup_iterations:
+                # create a small crop from this image (for the style loss)
                 img_to_stylize = torch.zeros((data['H'], data['W'], 3), dtype=torch.float32).cuda()
                 img_to_stylize.flatten(0, 1)[d["indices"]] = pred_colors.float()
                 img_to_stylize = img_to_stylize[d['minmax'][0].item():d['minmax'][1].item(),
                                                 d['minmax'][2].item():d['minmax'][3].item()]
+                # style loss
                 if params.style_weight > 0:
                     style_loss = style_encoder.style_loss(img_to_stylize.permute(-1, 0, 1))
                     loss += style_loss.half() * params.style_weight
 
+                # tv edges from depth estimates
                 depth_w_var = d['depth_h_var']
                 depth_v_var = d['depth_v_var']
 
                 if params.tv_weight > 0:
                     if params.tv_depth_guide:
+                        # depth weighted tv loss
                         tv_loss = style_encoder.tv_loss_depth_weighted(img_to_stylize.permute(-1, 0, 1),
                                                                        depth_v_var=depth_v_var, depth_w_var=depth_w_var,
                                                                        weights_trans=d['cut_smooth'])
                     else:
+                        # non depth weighted tv loss
                         tv_loss = style_encoder.tv_loss(img_to_stylize.permute(-1, 0, 1))
                     loss += tv_loss.half() * params.tv_weight
 
                 if params.smooth_trans_weight > 0:
+                    # extra loss forcing the transition to be smooth
                     smooth_trans_loss = style_encoder.smooth_transition_loss(d['cut_gt'], img_to_stylize,
                                                                              d['cut_smooth'])
                     loss += smooth_trans_loss.half() * params.smooth_trans_weight
 
                 if params.depth_disc_weight > 0:
+                    # extra loss for edges suited to the image depth discontinuities
                     depth_disc_loss = style_encoder.depth_discontinuity_loss(img_to_stylize.permute(-1, 0, 1),
                                                                    depth_v_var=depth_v_var, depth_w_var=depth_w_var)
                     loss += depth_disc_loss.half() * params.depth_disc_weight
 
+            # experimental loss (never used)
             if params.intensity_weight > 0:
                 loss += params.intensity_weight * style_encoder.intensity_loss(pred_colors, d["target"].half())
 
@@ -1035,13 +1041,6 @@ class Trainer(object):
             self.scaler.scale(loss).backward()
             self.scaler.step(self.style_optimizer)
             self.scaler.update()
-
-            #if self.scheduler_update_every_step:
-            #    self.lr_scheduler.step()
-
-
-        #if self.ema is not None:
-        #    self.ema.update()
 
         average_loss = total_loss.item() / step
 
@@ -1055,10 +1054,11 @@ class Trainer(object):
 
         return outputs
 
+    # experimental feature, never used
     def train_styleenc_step_npr(self,
                                 train_loader,
                                 edit_dataset,
-                                style_encoder: StyleEncoder,
+                                style_encoder: LAENeRF,
                                 params: Namespace,
                                 semantic_encoder: SemanticEncoder,
                                 step: int = 16,
@@ -1072,7 +1072,6 @@ class Trainer(object):
         total_loss = torch.tensor([0], dtype=torch.float32, device=self.device)
         loss_fct = nn.MSELoss()
 
-        self.model.eval()
         # na\"ive Adam
         if self.style_optimizer is None:
             # naive adam
@@ -1177,7 +1176,7 @@ class Trainer(object):
         return outputs
 
     def project_points(self, pose, intrinsics, W, H, selected_points, downscale=1):
-
+        # point projection
         if len(selected_points) == 0:
             return
 
@@ -1197,8 +1196,10 @@ class Trainer(object):
             'W': rW,
         }
 
+        # indexes for point projection
         xs, ys = tuple(round(p[1] * downscale) for p in selected_points), tuple(round(p[0] * downscale) for p in selected_points)
 
+        # raymarching
         self.model.eval()
 
         if self.ema is not None:
@@ -1213,6 +1214,7 @@ class Trainer(object):
         if self.ema is not None:
             self.ema.restore()
 
+        # get ray termination for selected points based on estimated depth
         d = rays['rays_d'].squeeze().reshape(rH, rW, -1)[xs, ys]
         o = rays['rays_o'].squeeze().reshape(rH, rW, -1)[xs, ys]
         x_term = o + preds_depth[:, xs, ys].permute(-1, 0) * d
@@ -1224,7 +1226,8 @@ class Trainer(object):
         return outputs
 
     # [GUI] test on a single image
-    def test_gui_styleenc(self, pose, intrinsics, W, H, edit_grid, style_enc: StyleEncoder, bg_color=None, spp=1,
+    # for visualization purposes
+    def test_gui_styleenc(self, pose, intrinsics, W, H, edit_grid, style_enc: LAENeRF, bg_color=None, spp=1,
                           downscale=1, show_index=-1, show_weights=True, use_offsets=True, p_weights=None, p_bias=None):
         
         # render resolution (may need downscale to for better frame rate)
@@ -1269,21 +1272,9 @@ class Trainer(object):
 
         indices = d.flatten().nonzero(as_tuple=True)
 
-        #pred_w8s = pred_w8s_edit.clone()
-        # difference must be larger than a threshold value \tau_{\text{weight}}
-        # this eliminates the effect of floaters to a large degree
-        # weights_edit_sum[torch.abs(weights_sum - weights_edit_sum) > 0.5] = 0
-        #pred_w8s[torch.abs(pred_w8s_density - pred_w8s) > 0.75] = 0
-        # depth must be valid for the sample to be accepted
-        # bigger than the minimal near bound
-        # weights_edit_sum[depth.squeeze() < nears.min()] = 0
-        #pred_w8s[depth_.squeeze() < min_near] = 0
-        # weights_edit_sum[weights_edit_sum > 0] = weights_sum[weights_edit_sum > 0]
-        #pred_w8s[pred_w8s > 0] = pred_w8s_density[pred_w8s > 0]
-
-        #mask = pred_w8s.nonzero(as_tuple=True)
-
         if show_index != -1:
+            # debugging features
+            # show weights
             if show_weights:
                 pred_colors = style_enc.get_weights(
                     x=x_term.squeeze()[indices],
@@ -1294,6 +1285,8 @@ class Trainer(object):
                     d=rays['rays_d'].squeeze()[indices],
                 )) * 0.5 + 0.5
         else:
+            # debugging feature
+            # use offsets or dont use offsets
             if use_offsets:
                 pred_weights = style_enc.get_weights(
                     x=x_term.squeeze()[indices]
@@ -1313,7 +1306,7 @@ class Trainer(object):
                 )
                 pred_colors = pred_weights @ style_enc.get_color_palette().half()
                 pred_colors = torch.clamp(pred_colors, 0, 1)
-        #pred_colors *= pred_t[indices].detach()[..., None]
+
         pred_colors += (1 - pred_t[indices].detach()[..., None]) * bg_color.cuda()
         preds.flatten(0, 2)[indices] = pred_colors.detach().float()
 
@@ -1337,7 +1330,7 @@ class Trainer(object):
 
         return outputs
 
-    def val_gui_styleenc(self, pose, intrinsics, W, H, edit_grid, style_enc: StyleEncoder, bg_color=None):
+    def val_gui_styleenc(self, pose, intrinsics, W, H, edit_grid, style_enc: LAENeRF, bg_color=None):
 
         # render resolution (may need downscale to for better frame rate)
         intrinsics = intrinsics

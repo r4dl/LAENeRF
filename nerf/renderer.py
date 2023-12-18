@@ -394,9 +394,6 @@ class NeRFRenderer(nn.Module):
     def run_cuda_distill(self, rays_o, rays_d, edit_bitfield, dt_gamma=0, bg_color=None, perturb=False,
                          force_all_rays=False, max_steps=1024, T_thresh=1e-4, perturb_depth=False, grow_grid=False,
                          **kwargs):
-        # rays_o, rays_d: [B, N, 3], assumes B == 1
-        # return: image: [B, N, 3], depth: [B, N]
-
         prefix = rays_o.shape[:-1]
         rays_o = rays_o.contiguous().view(-1, 3)
         rays_d = rays_d.contiguous().view(-1, 3)
@@ -408,6 +405,8 @@ class NeRFRenderer(nn.Module):
         nears, fars = raymarching.near_far_from_aabb(rays_o, rays_d,
                                                      self.aabb_train if self.training else self.aabb_infer,
                                                      self.min_near)
+
+        # if grow_grid: extract 3d positions for the growing grid
         if grow_grid:
             dens_bitfield = edit_bitfield
         else:
@@ -420,6 +419,7 @@ class NeRFRenderer(nn.Module):
         weights_sum = torch.zeros(N, dtype=dtype, device=device)
         weights_edit_sum = torch.zeros(N, dtype=dtype, device=device)
         depth = torch.zeros(N, dtype=dtype, device=device)
+        # depth for the edit grid
         depth_edit = torch.zeros(N, dtype=dtype, device=device)
         image = torch.zeros(N, 3, dtype=dtype, device=device)
 
@@ -469,9 +469,6 @@ class NeRFRenderer(nn.Module):
         image = image.view(*prefix, 3)
         depth = depth.view(*prefix)
 
-        # if depth is less than near, then weight should be zero
-        # weights_sum[(depth < nears.min()).squeeze()] = 0
-
         results['depth'] = depth
         results['depth_edit'] = depth_edit
         results['image'] = image
@@ -479,14 +476,6 @@ class NeRFRenderer(nn.Module):
         results['weights_edit'] = weights_edit_sum
         results['weights'] = weights_sum
         results['min_near'] = nears.min()
-        # difference must be larger than a threshold value \tau_{\text{weight}}
-        # this eliminates the effect of floaters to a large degree
-        # weights_edit_sum[torch.abs(weights_sum - weights_edit_sum) > 0.5] = 0
-        # depth must be valid for the sample to be accepted
-        # bigger than the minimal near bound
-        # weights_edit_sum[depth.squeeze() < nears.min()] = 0
-        # weights_edit_sum[weights_edit_sum > 0] = weights_sum[weights_edit_sum > 0]
-        # results['weights'] = weights_edit_sum
 
         return results
 
