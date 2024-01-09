@@ -120,6 +120,11 @@ To save the difference images as well as the results as a json file, provide a `
 ### View Consistency
 To evaluate view-consistency, clone [RAFT](https://github.com/princeton-vl/RAFT), 
 install the conda environment according to their README.md and download their models.
+As we also evaluate LPIPS, you need to run
+```bash
+pip install lpips
+```
+after activating the RAFT environment.
 Copy `scripts/eval/consistency_metrics.py` in the `RAFT` directory.
 Finally, to obtain view-consistency metrics:
 ```bash
