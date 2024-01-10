@@ -99,7 +99,7 @@ def validate_longrange(model, frames_directory, frames_directory_gt, step=7):
     errors_ours = []
     lpips_ours = []
 
-    for test_id in range(len(frames_directory) - step):
+    for test_id in range(len(frames_gt) - step):
         image1 = frame_utils.read_gen(os.path.join(frames_directory_gt, frames_gt[test_id]))
         image2 = frame_utils.read_gen(os.path.join(frames_directory_gt, frames_gt[test_id + step]))
         image1 = np.array(image1).astype(np.uint8)[..., :3]
