@@ -66,7 +66,7 @@ For LLFF and mip-NeRF 360, data conversion is required:
 # mip-NeRF 360
 python scripts/llff2nerf.py /path/to/the/scene/directory --images images_4 --downscale 4 --datatype mip360
 # LLFF
-python scripts/llff2nerf.py /path/to/the/scene/directory --images images_4 --downscale 4 --datatype masks
+python scripts/llff2nerf.py /path/to/the/scene/directory --images images_4 --downscale 4 --datatype llff
 ```
 
 ## Training a NeRF
