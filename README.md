@@ -1,7 +1,8 @@
 # LAENeRF: Local Appearance Editing for Neural Radiance Fields
 ### [Lukas Radl](https://r4dl.github.io/), [Michael Steiner](https://online.tugraz.at/tug_online/visitenkarte.show_vcard?pPersonenId=2999CD2743C7E977&pPersonenGruppe=3), [Andreas Kurz](https://scholar.google.com/citations?user=3yD4NZgAAAAJ&hl=de&oi=ao), [Markus Steinberger](https://www.markussteinberger.net/)
 ##### Institute of Computer Graphics and Vision, Graz University of Technology
-#### [Project Page](https://r4dl.github.io/LAENeRF/) | [Preprint](https://arxiv.org/abs/2312.09913) | [Video](https://youtu.be/HwQ1x0Fb2Qc)
+#### [Project Page](https://r4dl.github.io/LAENeRF/) | [Paper](https://arxiv.org/abs/2312.09913) | [Video](https://youtu.be/HwQ1x0Fb2Qc) | [Data](https://drive.google.com/file/d/1y8e2q-6HJz2YcBoWqZJl9OR3NhMYVPgT/view?usp=sharing)
+### CVPR 2024
 
 <p align="middle">
     <img src="assets/teaser.png" width=1200px>
@@ -116,6 +117,7 @@ python scripts/eval/mse_background_llff.py --scene {scene} --results_dir {result
 ```
 Further, to compare to images from a pre-trained NeRF, provide a `--comparison_dir`. 
 To save the difference images as well as the results as a json file, provide a `--save_dir`.
+Our masks for mip-NeRF 360 are located [here](https://drive.google.com/file/d/1y8e2q-6HJz2YcBoWqZJl9OR3NhMYVPgT/view?usp=sharing).
 
 ### View Consistency
 To evaluate view-consistency, clone [RAFT](https://github.com/princeton-vl/RAFT), 
@@ -140,11 +142,11 @@ Importantly, we compute the optical flow from the former, and measure MSE with t
 ## Citation
 If you find our work useful, consider citing us with:
 ```bibtex
-@article{Radl2023laenerf,
+@inproceedings{radl2024laenerf,
   title     = {{LAENeRF: Local Appearance Editing of Neural Radiance Fields}},
   author    = {Radl, Lukas and Steiner, Michael and Kurz, Andreas and Steinberger, Markus},
-  journal   = {arXiv preprint arXiv:2312.09913},
-  year      = {2023},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2024},
 }
 ```
 
@@ -177,14 +179,14 @@ Some elements of the GUI as well as scripts for data conversion and running our 
 The segmentation masks for Mip-NeRF 360 were extracted with [Segment Anything](https://github.com/facebookresearch/segment-anything),
 and the masks for LLFF were given to use by the authors of [ICE-NeRF](https://heuyklee.github.io/ice-nerf/).
 ```bibtex
-@article{kirillov2023segany,
+@inproceedings{kirillov2023segany,
   title     = {Segment Anything},
   author    = {Kirillov, Alexander and Mintun, Eric and Ravi, Nikhila and Mao, Hanzi and Rolland, Chloe and Gustafson, Laura and Xiao, Tete and Whitehead, Spencer and Berg, Alexander C. and Lo, Wan-Yen and Doll{\'a}r, Piotr and Girshick, Ross},
-  journal   = {arXiv:2304.02643},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
   year      = {2023}
 }
 
-@InProceedings{Lee_2023_ICCV,
+@inproceedings{Lee_2023_ICCV,
   author    = {Lee, Jae-Hyeok and Kim, Dae-Shik},
   title     = {ICE-NeRF: Interactive Color Editing of NeRFs via Decomposition-Aware Weight Optimization},
   booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
