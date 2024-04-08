@@ -139,8 +139,8 @@ function changeScene(scene, style_base) {
     const loadImage = src =>
     new Promise((resolve, reject) => {
         const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.addEventListener('load', () => resolve(img));
+        img.addEventListener('error', (err) => reject(err));
         img.src = src;
     });
 
@@ -205,8 +205,8 @@ function changeSceneRecolor(scene, style_base) {
     const loadImage = src =>
     new Promise((resolve, reject) => {
         const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.addEventListener('load', () => resolve(img));
+        img.addEventListener('error', (err) => reject(err));
         img.src = src;
     });
     
@@ -258,8 +258,8 @@ function changeSceneRecolorStyle(scene, style_base) {
     const loadImage = src =>
     new Promise((resolve, reject) => {
         const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.addEventListener('load', () => resolve(img));
+        img.addEventListener('error', (err) => reject(err));
         img.src = src;
     });
 
@@ -307,8 +307,8 @@ function changeGIF(style_image, image) {
     const loadImage = src =>
     new Promise((resolve, reject) => {
         const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.addEventListener('load', () => resolve(img));
+        img.addEventListener('error', (err) => reject(err));
         img.src = src;
     });
 
@@ -343,8 +343,8 @@ function changeGIFrecolor(color, image) {
     const loadImage = src =>
     new Promise((resolve, reject) => {
         const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.addEventListener('load', () => resolve(img));
+        img.addEventListener('error', (err) => reject(err));
         img.src = src;
     });
 
@@ -378,8 +378,8 @@ function changeGIFrecolorstyle(color, image) {
     const loadImage = src =>
     new Promise((resolve, reject) => {
         const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.addEventListener('load', () => resolve(img));
+        img.addEventListener('error', (err) => reject(err));
         img.src = src;
     });
 
