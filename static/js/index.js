@@ -135,13 +135,35 @@ function changeScene(scene, style_base) {
     activeBtn.className = 'button-17-selected';
 
     var im_ref = document.getElementById("gif_ref")
-    im_ref.src = "static/demo/" + currentScene + '/' + currentScene + ".gif";
-
     var im = document.getElementById("gif_style");
-    im.src = "static/demo/" + currentScene + '/' + style_base + ".gif";
+
+    let images = [
+        "static/demo/" + currentScene + '/' + style_base + ".gif",
+        "static/demo/" + currentScene + '/' + currentScene + ".gif"
+    ]
+
+    whereto = [
+        im,
+        im_ref
+    ]
+
+    images.forEach(function (value, i) {
+        whereto[i].src = value;
+    });
 
     var circle = document.getElementById(currentScene + '_' + style_base);
     circle.className = "circle-selected";
+}
+
+function imgError() {
+    alert("Image can't be loaded:\n" + this.src);
+  }
+function imgLoaded(ev) {
+if (--imgCount === 0) {
+    document.querySelectorAll(".syncedImage").forEach((img, i) => {
+    img.src = images[i];
+    });
+    }
 }
 
 function changeSceneRecolor(scene, style_base) {
@@ -160,14 +182,31 @@ function changeSceneRecolor(scene, style_base) {
     var activeBtn = document.getElementById("recbtn_" + currentSceneRecolor);
     activeBtn.className = 'button-17-selected';
 
-    var im_ref = document.getElementById("recgif_ref")
-    im_ref.src = "static/demo/" + currentSceneRecolor + '/' + currentSceneRecolor + ".gif";
-
     var im = document.getElementById("recgif_style");
-    im.src = "static/demo/" + currentSceneRecolor + '/' + style_base + ".gif";
+    var im_ref = document.getElementById("recgif_ref")
+
+    let images = [
+        "static/demo/" + currentSceneRecolor + '/' + style_base + ".gif",
+        "static/demo/" + currentSceneRecolor + '/' + currentSceneRecolor + ".gif"
+    ]
+
+    whereto = [
+        im,
+        im_ref
+    ]
+
+    images.forEach(function (value, i) {
+        whereto[i].src = value;
+    });
 
     var circle = document.getElementById(currentSceneRecolor + '_' + style_base);
     circle.className = "circle-rec-selected";
+}
+
+function printi() {
+    changeGIF('basquiat', document.getElementById('horns_basquiat'));
+    changeGIFrecolor('darkred', document.getElementById('flower_darkred'));
+    changeGIFrecolorstyle('red', document.getElementById('hornswave_red'));
 }
 
 function changeSceneRecolorStyle(scene, style_base) {
@@ -187,10 +226,21 @@ function changeSceneRecolorStyle(scene, style_base) {
     activeBtn.className = 'button-17-selected';
 
     var im_ref = document.getElementById("rsgif_ref")
-    im_ref.src = "static/demo/" + currentSceneRecolorStyle + '/' + currentSceneRecolorStyle + ".gif";
-
     var im = document.getElementById("rsgif_style");
-    im.src = "static/demo/" + currentSceneRecolorStyle + '/' + style_base + ".gif";
+
+    let images = [
+        "static/demo/" + currentSceneRecolorStyle + '/' + style_base + ".gif",
+        "static/demo/" + currentSceneRecolorStyle + '/' + currentSceneRecolorStyle + ".gif"
+    ]
+
+    whereto = [
+        im,
+        im_ref
+    ]
+
+    images.forEach(function (value, i) {
+        whereto[i].src = value;
+    });
 
     var circle = document.getElementById(currentSceneRecolorStyle + '_' + style_base);
     circle.className = "circle-rs-selected";
@@ -216,8 +266,21 @@ function changeGIF(style_image, image) {
     image.className = "circle-selected";
     var im = document.getElementById("gif_style")
     var im_ref = document.getElementById("gif_ref")
-    im.src = "static/demo/" + currentScene + '/' + style_image + ".gif";
-    im_ref.src = im_ref.src;
+
+    let images = [
+        "static/demo/" + currentScene + '/' + style_image + ".gif",
+        im_ref.src
+    ]
+
+    whereto = [
+        im,
+        im_ref
+    ]
+
+    images.forEach(function (value, i) {
+        whereto[i].src = value;
+    });
+
 }
 
 function changeGIFrecolor(color, image) {
@@ -229,8 +292,20 @@ function changeGIFrecolor(color, image) {
     image.className = "circle-rec-selected";
     var im = document.getElementById("recgif_style")
     var im_ref = document.getElementById("recgif_ref")
-    im.src = "static/demo/" + currentSceneRecolor + '/' + color + ".gif";
-    im_ref.src = im_ref.src;
+
+    let images = [
+        "static/demo/" + currentSceneRecolor + '/' + color + ".gif",
+        im_ref.src
+    ]
+
+    whereto = [
+        im,
+        im_ref
+    ]
+
+    images.forEach(function (value, i) {
+        whereto[i].src = value;
+    });
 }
 
 function changeGIFrecolorstyle(color, image) {
@@ -242,6 +317,18 @@ function changeGIFrecolorstyle(color, image) {
     image.className = "circle-rs-selected";
     var im = document.getElementById("rsgif_style")
     var im_ref = document.getElementById("rsgif_ref")
-    im.src = "static/demo/" + currentSceneRecolorStyle + '/' + color + ".gif";
-    im_ref.src = im_ref.src;
+
+    let images = [
+        "static/demo/" + currentSceneRecolorStyle + '/' + color + ".gif",
+        im_ref.src
+    ]
+
+    whereto = [
+        im,
+        im_ref
+    ]
+
+    images.forEach(function (value, i) {
+        whereto[i].src = value;
+    });
 }
