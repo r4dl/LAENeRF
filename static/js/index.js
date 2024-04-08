@@ -136,10 +136,25 @@ function changeScene(scene, style_base) {
 
     var im_ref = document.getElementById("gif_ref")
     var im = document.getElementById("gif_style");
+    const loadImage = src =>
+    new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
 
-    let images = [
+    let name = currentScene
+    if (name.includes('flower')) {
+        name = 'flower_style'
+    }
+    if (name.includes('horns')) {
+        name = 'horns_style'
+    }
+
+    const imageUrls = [
         "static/demo/" + currentScene + '/' + style_base + ".gif",
-        "static/demo/" + currentScene + '/' + currentScene + ".gif"
+        "static/demo/" + currentScene + '/' + name + ".gif"
     ]
 
     whereto = [
@@ -147,8 +162,10 @@ function changeScene(scene, style_base) {
         im_ref
     ]
 
-    images.forEach(function (value, i) {
-        whereto[i].src = value;
+    Promise.all(imageUrls.map(loadImage)).then(images => {
+        images.forEach((image, i) =>
+        whereto[i].src = image.src
+        );
     });
 
     var circle = document.getElementById(currentScene + '_' + style_base);
@@ -185,18 +202,28 @@ function changeSceneRecolor(scene, style_base) {
     var im = document.getElementById("recgif_style");
     var im_ref = document.getElementById("recgif_ref")
 
-    let images = [
+    const loadImage = src =>
+    new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
+    
+    const imageUrls = [
         "static/demo/" + currentSceneRecolor + '/' + style_base + ".gif",
         "static/demo/" + currentSceneRecolor + '/' + currentSceneRecolor + ".gif"
-    ]
+    ];
 
     whereto = [
         im,
         im_ref
     ]
 
-    images.forEach(function (value, i) {
-        whereto[i].src = value;
+    Promise.all(imageUrls.map(loadImage)).then(images => {
+        images.forEach((image, i) =>
+        whereto[i].src = image.src
+        );
     });
 
     var circle = document.getElementById(currentSceneRecolor + '_' + style_base);
@@ -228,7 +255,15 @@ function changeSceneRecolorStyle(scene, style_base) {
     var im_ref = document.getElementById("rsgif_ref")
     var im = document.getElementById("rsgif_style");
 
-    let images = [
+    const loadImage = src =>
+    new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
+
+    const imageUrls = [
         "static/demo/" + currentSceneRecolorStyle + '/' + style_base + ".gif",
         "static/demo/" + currentSceneRecolorStyle + '/' + currentSceneRecolorStyle + ".gif"
     ]
@@ -238,8 +273,10 @@ function changeSceneRecolorStyle(scene, style_base) {
         im_ref
     ]
 
-    images.forEach(function (value, i) {
-        whereto[i].src = value;
+    Promise.all(imageUrls.map(loadImage)).then(images => {
+        images.forEach((image, i) =>
+        whereto[i].src = image.src
+        );
     });
 
     var circle = document.getElementById(currentSceneRecolorStyle + '_' + style_base);
@@ -267,7 +304,15 @@ function changeGIF(style_image, image) {
     var im = document.getElementById("gif_style")
     var im_ref = document.getElementById("gif_ref")
 
-    let images = [
+    const loadImage = src =>
+    new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
+
+    const imageUrls = [
         "static/demo/" + currentScene + '/' + style_image + ".gif",
         im_ref.src
     ]
@@ -277,8 +322,10 @@ function changeGIF(style_image, image) {
         im_ref
     ]
 
-    images.forEach(function (value, i) {
-        whereto[i].src = value;
+    Promise.all(imageUrls.map(loadImage)).then(images => {
+        images.forEach((image, i) =>
+        whereto[i].src = image.src
+        );
     });
 
 }
@@ -293,7 +340,15 @@ function changeGIFrecolor(color, image) {
     var im = document.getElementById("recgif_style")
     var im_ref = document.getElementById("recgif_ref")
 
-    let images = [
+    const loadImage = src =>
+    new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
+
+    const imageUrls = [
         "static/demo/" + currentSceneRecolor + '/' + color + ".gif",
         im_ref.src
     ]
@@ -303,8 +358,10 @@ function changeGIFrecolor(color, image) {
         im_ref
     ]
 
-    images.forEach(function (value, i) {
-        whereto[i].src = value;
+    Promise.all(imageUrls.map(loadImage)).then(images => {
+        images.forEach((image, i) =>
+        whereto[i].src = image.src
+        );
     });
 }
 
@@ -318,7 +375,15 @@ function changeGIFrecolorstyle(color, image) {
     var im = document.getElementById("rsgif_style")
     var im_ref = document.getElementById("rsgif_ref")
 
-    let images = [
+    const loadImage = src =>
+    new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
+
+    const imageUrls = [
         "static/demo/" + currentSceneRecolorStyle + '/' + color + ".gif",
         im_ref.src
     ]
@@ -328,7 +393,9 @@ function changeGIFrecolorstyle(color, image) {
         im_ref
     ]
 
-    images.forEach(function (value, i) {
-        whereto[i].src = value;
+    Promise.all(imageUrls.map(loadImage)).then(images => {
+        images.forEach((image, i) =>
+        whereto[i].src = image.src
+        );
     });
 }
