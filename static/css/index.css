@@ -24,7 +24,7 @@ body {
 }
 
 .teaser {
-    font-family: 'Google Sans', sans-serif;
+    font-family: 'Jost', sans-serif;
 }
 
 
@@ -48,7 +48,7 @@ body {
 }
 
 .publication-title-bf {
-    font-family: 'Google Sans', sans-serif;
+    font-family: 'Jost', sans-serif;
     font-weight: bolder;
 }
 
@@ -82,7 +82,7 @@ body {
     cursor: pointer;
     display: inline-flex;
     fill: currentcolor;
-    font-family: "Google Sans", Roboto, Arial, sans-serif;
+    font-family: "Jost", Roboto, Arial, sans-serif;
     font-size: 16px;
     font-weight: 500;
     height: 48px;
@@ -116,7 +116,7 @@ body {
     cursor: pointer;
     display: inline-flex;
     fill: currentcolor;
-    font-family: "Google Sans", Roboto, Arial, sans-serif;
+    font-family: "Jost", Roboto, Arial, sans-serif;
     font-size: 17px;
     font-weight: 600;
     height: 48px;
@@ -360,11 +360,11 @@ element {
 }
 
 .publication-title {
-    font-family: 'Google Sans', sans-serif;
+    font-family: 'Jost', sans-serif;
 }
 
 .publication-authors {
-    font-family: 'Google Sans', sans-serif;
+    font-family: 'Jost', sans-serif;
 }
 
 .publication-venue {
